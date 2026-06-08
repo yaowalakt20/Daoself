@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="myflow · self">
+<meta name="theme-color" content="#faf8f5">
+<title>myflow · self</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf8f5;--bg2:#f5f1ec;--bg3:#f0ebe3;--card:#fff;--border:#e8e2d8;--border2:#e0d4c8;
+  --text1:#3d2e26;--text2:#6b5a50;--text3:#a09080;--accent:#8b6f5e;--accent2:#c4906a;
+  --warm:#f5ede8;--warm-b:#e0c8b8;--safe-b:env(safe-area-inset-bottom,0px);--safe-t:env(safe-area-inset-top,0px);}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;background:var(--bg3);}
+body{font-family:-apple-system,system-ui,sans-serif;color:var(--text1);}
+#app{display:flex;flex-direction:column;height:100vh;height:100dvh;padding-top:var(--safe-t);}
+.content{flex:1;overflow-y:auto;overflow-x:hidden;background:var(--bg);-webkit-overflow-scrolling:touch;padding-bottom:calc(74px + var(--safe-b));}
+.page{display:none;padding:20px 16px 8px;}.page.active{display:block;}
+.tabbar{position:fixed;bottom:0;left:0;right:0;background:rgba(250,248,245,.96);border-top:.5px solid var(--border);display:flex;align-items:flex-start;padding-top:6px;padding-bottom:var(--safe-b);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);z-index:100;height:calc(66px + var(--safe-b));}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;cursor:pointer;padding:2px 0;min-height:44px;gap:3px;}
+.tab-em{font-size:24px;line-height:1;transition:transform .15s;}.tab-lbl{font-size:11px;color:var(--text3);}
+.tab.active .tab-em{transform:scale(1.1);}.tab.active .tab-lbl{color:var(--accent);font-weight:600;}
+.st{font-size:11px;font-weight:500;color:var(--text3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;margin-top:18px;}.st:first-child{margin-top:0;}
+.ph{margin-bottom:14px;}.ph-title{font-size:21px;font-weight:500;}.ph-sub{font-size:12px;color:var(--text3);margin-top:3px;}
+/* affirmation card */
+.aff-card{background:#fdf8f0;border:.5px solid #d4c0a0;border-radius:18px;padding:36px 22px;position:relative;min-height:290px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;margin-bottom:12px;}
+.aff-frame{position:absolute;top:12px;left:12px;right:12px;bottom:12px;border:.5px solid #e0cca8;border-radius:10px;pointer-events:none;}
+.ac{position:absolute;width:30px;height:30px;}.ac svg{width:30px;height:30px;}
+.ac.tl{top:6px;left:6px;}.ac.tr{top:6px;right:6px;transform:scaleX(-1);}.ac.bl{bottom:6px;left:6px;transform:scaleY(-1);}.ac.br{bottom:6px;right:6px;transform:scale(-1);}
+.aff-cat{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#c4a07a;margin-bottom:14px;font-family:"Cormorant Garamond",serif;}
+.aff-txt{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:22px;line-height:1.65;color:var(--text1);text-align:center;font-weight:300;padding:0 8px;transition:opacity .28s;}.aff-txt.fade{opacity:0;}
+.aff-div{width:30px;height:.5px;background:#d4c0a0;margin:14px auto;}.aff-sub{font-size:11px;color:#c4a07a;letter-spacing:.07em;font-family:"Cormorant Garamond",serif;}
+.aff-hint{text-align:center;font-size:11px;color:#c4b4a0;font-family:"Cormorant Garamond",serif;font-style:italic;margin-bottom:12px;}
+.cpills{display:flex;flex-wrap:wrap;gap:6px;}.cpill{font-size:11px;padding:5px 12px;border-radius:20px;border:.5px solid #d4c0a0;background:var(--bg);color:#8a7060;cursor:pointer;}.cpill.active{background:var(--warm);border-color:var(--accent2);color:#7a4e2c;}
+/* vibe matrix */
+.scroll-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -16px;padding:0 16px;}
+.scroll-wrap::-webkit-scrollbar{height:3px;}.scroll-wrap::-webkit-scrollbar-thumb{background:#c4a07a;border-radius:2px;}
+.mi{font-size:11px;padding:4px 7px;border-radius:7px;border:.5px solid;line-height:1.4;margin-bottom:3px;}
+.mi.s{background:#fdf0e0;border-color:#e8d4b0;color:#8a6030;}.mi.e{background:#e8f5f0;border-color:#b0dcc8;color:#2a7a5a;}.mi.sd{background:#ede8f5;border-color:#c8c0e8;color:#5a4a8a;}.mi.d{background:#f5e8f0;border-color:#e0c0d4;color:#8a3a6a;}.mi.sp{background:#f5f0e0;border-color:#e0d4a0;color:#7a6020;}
+.mleg{font-size:11px;padding:3px 10px;border-radius:10px;border:.5px solid;margin-right:5px;margin-bottom:5px;display:inline-block;}
+.mleg.s{background:#fdf0e0;color:#8a6030;border-color:#e8d4b0;}.mleg.e{background:#e8f5f0;color:#2a7a5a;border-color:#b0dcc8;}.mleg.sd{background:#ede8f5;color:#5a4a8a;border-color:#c8c0e8;}.mleg.d{background:#f5e8f0;color:#8a3a6a;border-color:#e0c0d4;}.mleg.sp{background:#f5f0e0;color:#7a6020;border-color:#e0d4a0;}
+.rh-c{padding:9px 6px;font-size:10px;font-weight:500;border-right:.5px solid var(--border);border-top:.5px solid var(--bg3);vertical-align:top;white-space:nowrap;width:60px;min-width:60px;}
+.mx-td{padding:7px 8px;vertical-align:top;border-top:.5px solid var(--bg3);border-right:.5px solid #f5f0ea;}
+.mx-table{border-collapse:collapse;min-width:550px;}
+.mx-table th{padding:7px 8px;font-size:10px;font-weight:500;text-align:left;}
+.mx-table thead th:first-child{width:60px;min-width:60px;background:var(--bg);border-right:.5px solid var(--border);}
+tr:nth-child(even) .mx-td{background:#fdf9f5;}tr:nth-child(odd) .mx-td{background:var(--card);}
+</style>
+</head>
+<body>
+<div id="app">
+<div class="content" id="content">
+
+<!-- SELF -->
+<div class="page active" id="pg-self">
+<div class="ph"><p class="ph-title">✨ myflow</p><p class="ph-sub" id="today-date-lbl"></p></div>
+<div class="aff-card" onclick="shuffleAff()">
+  <div class="aff-frame"></div>
+  <div class="ac tl"><svg viewBox="0 0 30 30" fill="none"><path d="M3 27C3 15 15 3 27 3" stroke="#c4a07a" stroke-width=".7"/><path d="M3 19C7 15 10 14 13 9" stroke="#c4a07a" stroke-width=".5"/><path d="M11 27C11 22 14 18 18 16" stroke="#c4a07a" stroke-width=".5"/><circle cx="4" cy="26" r="1.2" fill="#c4a07a"/><circle cx="12" cy="27" r=".8" fill="#c4a07a"/></svg></div>
+  <div class="ac tr"><svg viewBox="0 0 30 30" fill="none"><path d="M3 27C3 15 15 3 27 3" stroke="#c4a07a" stroke-width=".7"/><path d="M3 19C7 15 10 14 13 9" stroke="#c4a07a" stroke-width=".5"/><path d="M11 27C11 22 14 18 18 16" stroke="#c4a07a" stroke-width=".5"/><circle cx="4" cy="26" r="1.2" fill="#c4a07a"/><circle cx="12" cy="27" r=".8" fill="#c4a07a"/></svg></div>
+  <div class="ac bl"><svg viewBox="0 0 30 30" fill="none"><path d="M3 27C3 15 15 3 27 3" stroke="#c4a07a" stroke-width=".7"/><path d="M3 19C7 15 10 14 13 9" stroke="#c4a07a" stroke-width=".5"/><path d="M11 27C11 22 14 18 18 16" stroke="#c4a07a" stroke-width=".5"/><circle cx="4" cy="26" r="1.2" fill="#c4a07a"/><circle cx="12" cy="27" r=".8" fill="#c4a07a"/></svg></div>
+  <div class="ac br"><svg viewBox="0 0 30 30" fill="none"><path d="M3 27C3 15 15 3 27 3" stroke="#c4a07a" stroke-width=".7"/><path d="M3 19C7 15 10 14 13 9" stroke="#c4a07a" stroke-width=".5"/><path d="M11 27C11 22 14 18 18 16" stroke="#c4a07a" stroke-width=".5"/><circle cx="4" cy="26" r="1.2" fill="#c4a07a"/><circle cx="12" cy="27" r=".8" fill="#c4a07a"/></svg></div>
+  <p class="aff-cat" id="aff-cat">💗 Love & Abundance</p>
+  <p class="aff-txt" id="aff-txt">I am a magnet for love, abundance, and everything beautiful.</p>
+  <div class="aff-div"></div>
+  <p class="aff-sub" id="aff-sub">you are enough, exactly as you are</p>
+</div>
+<p class="aff-hint">tap to shuffle · hold to screenshot</p>
+<div style="display:flex;gap:8px;margin-bottom:14px;">
+  <div onclick="shuffleAff()" style="flex:1;padding:12px;border-radius:11px;border:.5px solid var(--border2);background:var(--bg2);color:var(--accent);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-weight:500;">🔀 New card</div>
+</div>
+<p class="st">Browse by intention</p>
+<div class="cpills"><span class="cpill active" onclick="fcat(this)">🌟 all</span><span class="cpill" onclick="fcat(this)">💗 love</span><span class="cpill" onclick="fcat(this)">🌿 abundance</span><span class="cpill" onclick="fcat(this)">🫀 body</span><span class="cpill" onclick="fcat(this)">☁️ peace</span><span class="cpill" onclick="fcat(this)">🌱 growth</span></div>
+</div>
+
+<!-- VIBES -->
+<div class="page" id="pg-vibe">
+<div class="ph"><p class="ph-title">💛 Vibe+</p><p class="ph-sub">Dopamine menu · scroll → for all columns</p></div>
+<div class="scroll-wrap">
+<table class="mx-table">
+<thead><tr>
+<th style="background:var(--bg);border-right:.5px solid var(--border);font-size:9px;color:var(--text3);"></th>
+<th style="background:#fdf0e0;color:#8a6030;">🌅 Starter<span style="display:block;font-size:8px;opacity:.7;font-weight:400;">free · instant</span></th>
+<th style="background:#e8f5f0;color:#2a7a5a;">🍽️ Entrée<span style="display:block;font-size:8px;opacity:.7;font-weight:400;">20–60 min</span></th>
+<th style="background:#ede8f5;color:#5a4a8a;">🎵 Side<span style="display:block;font-size:8px;opacity:.7;font-weight:400;">pair w/ task</span></th>
+<th style="background:#f5e8f0;color:#8a3a6a;">🍮 Dessert<span style="display:block;font-size:8px;opacity:.7;font-weight:400;">after main</span></th>
+<th style="background:#f5f0e0;color:#7a6020;">⭐ Special<span style="display:block;font-size:8px;opacity:.7;font-weight:400;">high reward</span></th>
+</tr></thead>
+<tbody>
+<tr>
+<td class="rh-c" style="background:#faf9fd;color:#5a5a8a;"><span style="display:block;font-size:18px;margin-bottom:2px;">🧠</span>Mind<span style="display:block;font-size:9px;color:#b0a090;">set</span></td>
+<td class="mx-td"><div class="mi s">🎵 Good music</div><div class="mi s">✍️ Writing</div><div class="mi s">🌬️ Breathwork</div><div class="mi s">👁️ Body scan</div><div class="mi s">🙏 3 Gratitudes</div><div class="mi s">🗂️ Tidy desk</div><div class="mi s">🎯 Goal review</div><div class="mi s">🌿 Look out nature</div></td>
+<td class="mx-td"><div class="mi e">📖 Reading</div><div class="mi e">🧘 Meditation</div><div class="mi e">⏱️ Deep work block</div><div class="mi e">🎨 Painting</div><div class="mi e">🍳 Cooking for fun</div></td>
+<td class="mx-td"><div class="mi sd">🎙️ Podcast</div></td>
+<td class="mx-td" style="color:#c8bfb0;font-size:12px;padding:7px;">—</td>
+<td class="mx-td"><div class="mi sp">🔔 Sound Bath Class</div></td>
+</tr>
+<tr>
+<td class="rh-c" style="background:#f9fdf9;color:#5a7a5a;"><span style="display:block;font-size:18px;margin-bottom:2px;">🫀</span>Body<span style="display:block;font-size:9px;color:#b0a090;">& bio</span></td>
+<td class="mx-td"><div class="mi s">☀️ Sunlight</div><div class="mi s">🧊 Face cold bath</div><div class="mi s">🍵 Matcha ☺</div><div class="mi s">🐱 Pet Muju ♡</div><div class="mi s">🧘 Yoga / stretch</div></td>
+<td class="mx-td"><div class="mi e">🥗 Eat good food</div><div class="mi e">🌅 Morning sun walk</div><div class="mi e">🚿 Cold shower</div><div class="mi e">🧘‍♀️ Yoga — full</div><div class="mi e">🏋️ Exercise</div></td>
+<td class="mx-td"><div class="mi sd">🌳 Park walk/run</div><div class="mi sd">🧖 Sauna / steam</div><div class="mi sd">💪 Exercise class</div><div class="mi sd">🎶 Music / Concert</div><div class="mi sd">🕯️ Candles/incense</div><div class="mi sd">💻 Coding</div></td>
+<td class="mx-td"><div class="mi d">💤 Do nothing REST</div></td>
+<td class="mx-td"><div class="mi sp">🌙 Full sleep well</div><div class="mi sp">🏅 Yoga Workshop</div></td>
+</tr>
+<tr>
+<td class="rh-c" style="background:#f6fdfd;color:#4a7a7a;"><span style="display:block;font-size:18px;margin-bottom:2px;">🫂</span>Social<span style="display:block;font-size:9px;color:#b0a090;">connect</span></td>
+<td class="mx-td"><div class="mi s">💬 Text friends</div><div class="mi s">📞 Call family</div></td>
+<td class="mx-td"><div class="mi e">📱 Calling friends</div><div class="mi e">🔕 Disconnect social</div></td>
+<td class="mx-td"><div class="mi sd">🧑‍🤝‍🧑 Hangout w/ friends</div></td>
+<td class="mx-td"><div class="mi d">📲 Social scrolling</div></td>
+<td class="mx-td"><div class="mi sp">✈️ Family trip</div><div class="mi sp">🚗 Friends trip</div><div class="mi sp">🎵 Concert</div><div class="mi sp">🎭 Live show</div></td>
+</tr>
+<tr>
+<td class="rh-c" style="background:#fdfaf2;color:#8a7a3a;"><span style="display:block;font-size:18px;margin-bottom:2px;">✨</span>Special<span style="display:block;font-size:9px;color:#b0a090;">xp</span></td>
+<td class="mx-td" style="color:#c8bfb0;font-size:12px;padding:7px;">—</td>
+<td class="mx-td" style="color:#c8bfb0;font-size:12px;padding:7px;">—</td>
+<td class="mx-td"><div class="mi sd">🎮 Video games</div><div class="mi sd">📱 Watching shorts</div><div class="mi sd">📺 TV shows</div></td>
+<td class="mx-td" style="color:#c8bfb0;font-size:12px;padding:7px;">—</td>
+<td class="mx-td"><div class="mi sp">🎓 Yoga Training</div><div class="mi sp">📚 Learning course</div><div class="mi sp">🌟 New experience</div><div class="mi sp">🌿 Screen-free day</div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div style="padding:10px 0 16px;">
+<span class="mleg s">🌅 starter</span><span class="mleg e">🍽️ entrée</span><span class="mleg sd">🎵 side</span><span class="mleg d">🍮 dessert</span><span class="mleg sp">⭐ special</span>
+</div>
+</div>
+
+</div>
+<div class="tabbar">
+  <div class="tab active" onclick="sp('self',this)"><span class="tab-em">✨</span><span class="tab-lbl">self</span></div>
+  <div class="tab" onclick="sp('vibe',this)"><span class="tab-em">💛</span><span class="tab-lbl">vibes</span></div>
+</div>
+</div>
+<script>
+var DAYS=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+var MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+var TODAY=new Date();
+
+// Set today label
+(function(){
+  var el=document.getElementById("today-date-lbl");
+  if(el)el.textContent=DAYS[TODAY.getDay()]+", "+TODAY.getDate()+" "+MONTHS[TODAY.getMonth()]+" "+TODAY.getFullYear();
+})();
+
+// Tab nav
+function sp(n,t){
+  document.querySelectorAll(".page").forEach(function(p){p.classList.remove("active");});
+  document.querySelectorAll(".tab").forEach(function(tb){tb.classList.remove("active");});
+  document.getElementById("pg-"+n).classList.add("active");
+  t.classList.add("active");
+  document.getElementById("content").scrollTop=0;
+}
+
+// Affirmations
+var affs=[
+  {t:"I am a magnet for love, abundance, and everything beautiful.",c:"💗 Love & Abundance",s:"you deserve all good things"},
+  {t:"My sensitivity is not a weakness — it is my deepest gift.",c:"✨ Self",s:"depth is your superpower"},
+  {t:"Financial freedom flows to me with ease and grace.",c:"🌿 Abundance",s:"wealth is your natural state"},
+  {t:"I am building a life that is entirely, beautifully mine.",c:"🌟 Purpose",s:"every step is intentional"},
+  {t:"My body is strong, wise, and worthy of deep care.",c:"🫀 Body",s:"honour your vessel"},
+  {t:"The right people and opportunities find me effortlessly.",c:"🌸 Attraction",s:"you are magnetic"},
+  {t:"I choose peace over perfection, every single day.",c:"☁️ Inner Peace",s:"peace is enough"},
+  {t:"I deserve rest as much as I deserve success.",c:"🌙 Balance",s:"rest is productive"},
+  {t:"I trust the unfolding of my life completely.",c:"🌊 Trust",s:"timing is always right"},
+  {t:"Love in all its forms flows freely and fully to me.",c:"💗 Love",s:"open your heart"},
+  {t:"I grow into the version of myself I have always known I could be.",c:"🌱 Growth",s:"becoming is beautiful"},
+  {t:"I am calm, clear, and aligned with my highest self.",c:"✨ Alignment",s:"stillness is strength"},
+  {t:"Abundance is my natural state. I welcome it fully.",c:"🌿 Abundance",s:"receive without guilt"},
+  {t:"My cycle, my rhythm, my pace — perfectly designed for me.",c:"🌸 Body",s:"honour your nature"},
+  {t:"I create beauty and meaning wherever I go.",c:"🌟 Purpose",s:"you leave a mark"}
+];
+var affCur=0;
+function shuffleAff(){
+  var t=document.getElementById("aff-txt");t.classList.add("fade");
+  setTimeout(function(){affCur=(affCur+1)%affs.length;t.textContent=affs[affCur].t;document.getElementById("aff-cat").textContent=affs[affCur].c;document.getElementById("aff-sub").textContent=affs[affCur].s;t.classList.remove("fade");},280);
+}
+function fcat(el){document.querySelectorAll(".cpill").forEach(function(p){p.classList.remove("active");});el.classList.add("active");}
+</script>
+</body>
+</html>
